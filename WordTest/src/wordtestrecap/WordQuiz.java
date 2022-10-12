@@ -1,11 +1,13 @@
 package wordtestrecap;
 
 import java.util.ArrayList;
+import java.util.InputMismatchException;
+import java.util.Scanner;
 
 public class WordQuiz {
 	
 	private String name;
-	private ArrayList<Word> w
+	private ArrayList<Word> w;
 	
 	public WordQuiz(String name) {
 		super();
@@ -37,22 +39,71 @@ public class WordQuiz {
 		for(int i=0; i<n.length; i++) {
 			do {
 				index = (int)(Math.random() * w.size());	// 0 ~ 16
-			}while(index == answerIndex); // 정답과 같은 index 번호이거나 n배열이 이미 들어있는 값이면 사용불가 판정
+			}while(index == answerIndex || exists(n, index)); // 정답과 같은 index 번호이거나 n배열이 이미 들어있는 값이면 사용불가 판정
 				n[i] = index;
 			
+		}	// for end
+		
+		for(int i=0; i<n.length; i++) {
+			ex[i] = n[i];	// 배열의 복사
+		}	// for end
+		
+		return (int)(Math.random() * n.length);
+	}	// makeExample
+	
+	private boolean exists(int n[], int index) {	// 보기가 중복되지 않도록 하기
+		for(int i=0; i<n.length; i++) {
+			if(n[i] == index) {
+				return true;
+			}
 		}
-	}
+		return false;
+	}	// exists end
 	
-	private boolean exists() {
+	public void run() {		// 작동 구문
+		System.out.println("\""+name+"\""+"의 단어 테스트를 시작합니다. -1을 입력하면 종료합니다.");
+		System.out.println("현재 "+w.size()+"개의 단어가 들어 있습니다.");
+		Scanner sc = new Scanner(System.in);
 		
-	}
-	
-	public void run() {
+		while(true) {
+			int answerIndex = (int)(Math.random() * w.size());	// 0 ~ 16
+			String eng = w.get(answerIndex).getEnglish();
+			
+			int example[] = new int[5];
+			
+			int answerLoc = makeExample(example, answerIndex);
+			example[answerLoc] = answerIndex;	// answerLoc → -0 ~ 4
+			
+			System.out.println(eng+"?");
+			for(int i=0; i<example.length; i++) {
+				System.out.print("("+(i+1)+")"+w.get(example[i]).getKorean()+" ");
+			}	// for end
+			
+			System.out.print(":>");
+			
+			try {
+				int in = sc.nextInt();
+				if(in == -1) {
+					break;
+				}
+				in--;
+				if(in == answerLoc) {
+					System.out.println("Excellent!!");
+					System.out.println("==============================");
+				}else {
+					System.out.println("No. !!");
+					System.out.println("==============================");
+				}
+			}catch(InputMismatchException e) {
+				sc.next();
+				System.out.println("숫자를 입력하세요!");
+			}	// try&catch end
+		}	// while end
+	}	// run end
 		
-	}
-
 	public static void main(String[] args) {
-		
-	}
+		WordQuiz wq = new WordQuiz("명품영어");
+		wq.run();
+	} // main() end
 
-}	// main() end
+}	// WordQuiz end
