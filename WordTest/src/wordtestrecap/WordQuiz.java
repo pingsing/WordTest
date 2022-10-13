@@ -10,6 +10,7 @@ public class WordQuiz {
 	private ArrayList<Word> w;
 	
 	public WordQuiz(String name) {
+		
 		super();
 		this.name = name;
 		
